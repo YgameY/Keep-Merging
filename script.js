@@ -147,7 +147,7 @@ function renderBoard() {
             img.addEventListener('dragstart', () => { draggedIndex = index; });
             cell.appendChild(img);
 
-            // 🔢 아이템 오른쪽 아래 배지
+            // 🔢 오른쪽 아래 배지
             const badge = document.createElement('span');
             badge.className = 'level-badge';
             badge.innerText = itemData.level;
