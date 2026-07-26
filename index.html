@@ -17,7 +17,7 @@
                         <div class="score-title">SCORE</div>
                         <div class="score-num" id="score-value">0</div>
                     </div>
-                    <button class="reset-btn" id="reset-btn">🔄</button>
+                    <button class="reset-btn" id="reset-btn">새로고침</button>
                 </div>
                 <!-- 머지판 -->
                 <div class="merge-board" id="merge-board"></div>
@@ -26,19 +26,20 @@
             <!-- 하단 생성기 퀵바 -->
             <div class="quickbar">
                 <div class="generator-slot" onclick="spawnItem('flower')">
-                    <img src="images/flower_1.png" alt="꽃">
+                    <img src="images/basket_flower.png" alt="꽃 바구니">
                 </div>
                 <div class="generator-slot" onclick="spawnItem('ocean')">
-                    <img src="images/ocean_1.png" alt="바다">
+                    <img src="images/basket_ocean.png" alt="바다 바구니">
                 </div>
                 <div class="generator-slot" onclick="spawnItem('space')">
-                    <img src="images/space_1.png" alt="우주">
+                    <img src="images/basket_space.png" alt="우주 바구니">
                 </div>
+                <div class="generator-slot empty"></div>
+                <div class="generator-slot empty"></div>
+                <!-- 6번째 자리(오른쪽 끝)로 이동된 올랜덤 생성기 -->
                 <div class="generator-slot" onclick="spawnRandom()">
-                    <span style="font-size: 1.2rem; font-weight: bold; color: #444;">??</span>
+                    <span style="font-size: 1.2rem; font-family: 'UiYeon', sans-serif; color: #444;">??</span>
                 </div>
-                <div class="generator-slot empty"></div>
-                <div class="generator-slot empty"></div>
             </div>
 
             <!-- 하단 광고 영역 -->
