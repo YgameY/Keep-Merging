@@ -22,9 +22,10 @@ const sounds = {
     clear_space: new Audio('sounds/clear_space.mp3')
 };
 
+// 🔊 메모리 누수 없는 최적화된 오디오 재생 함수
 function playSound(soundKey) {
     if (sounds[soundKey]) {
-        sounds[soundKey].currentTime = 0; // 처음 위치로 되돌리기
+        sounds[soundKey].currentTime = 0; // 재생 위치를 처음으로 리셋하여 재사용
         sounds[soundKey].play().catch(e => console.log("Audio play error:", e));
     }
 }
@@ -76,12 +77,43 @@ function loadGameState() {
     renderBoard();
 }
 
-// 아이템 5개 연속 생성 함수 (점수에 따라 나오는 레벨 변경)
+// 특정 카테고리 5개 생성 (꽃, 바다, 우주 생성기)
 function spawnItem(category) {
     const SPAWN_COUNT = 5;
     let spawnedAny = false;
+    const maxSpawnLevel = score >= 10000 ? 5 : 3;
 
-    // 점수가 10,000점 이상이면 1~5단계, 미만이면 1~3단계
+    for (let i = 0; i < SPAWN_COUNT; i++) {
+        const emptyIndices = boardState
+            .map((val, idx) => val === null ? idx : null)
+            .filter(val => val !== null);
+
+        if (emptyIndices.length === 0) {
+            if (!spawnedAny) {
+                alert("머지판이 꽉 찼습니다!");
+            }
+            break;
+        }
+
+        const targetIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+        const randomLevel = Math.floor(Math.random() * maxSpawnLevel) + 1;
+
+        boardState[targetIndex] = { category: category, level: randomLevel };
+        spawnedAny = true;
+    }
+
+    if (spawnedAny) {
+        playSound('pop');
+        renderBoard();
+        saveGameState();
+    }
+}
+
+// ❓❔ 올랜덤 생성기 함수 (아이템 하나마다 카테고리를 완전히 무작위 결정!)
+function spawnRandom() {
+    const SPAWN_COUNT = 5;
+    const categories = ['flower', 'ocean', 'space'];
+    let spawnedAny = false;
     const maxSpawnLevel = score >= 10000 ? 5 : 3;
 
     for (let i = 0; i < SPAWN_COUNT; i++) {
@@ -98,10 +130,11 @@ function spawnItem(category) {
 
         const targetIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
         
-        // 1 ~ maxSpawnLevel 범위 무작위 결정
+        // 🎲 매 아이템마다 카테고리와 레벨을 각각 랜덤 지정
+        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
         const randomLevel = Math.floor(Math.random() * maxSpawnLevel) + 1;
 
-        boardState[targetIndex] = { category: category, level: randomLevel };
+        boardState[targetIndex] = { category: randomCategory, level: randomLevel };
         spawnedAny = true;
     }
 
@@ -110,13 +143,6 @@ function spawnItem(category) {
         renderBoard();
         saveGameState();
     }
-}
-
-// ❓❔ 올랜덤 생성기 함수
-function spawnRandom() {
-    const categories = ['flower', 'ocean', 'space'];
-    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-    spawnItem(randomCategory);
 }
 
 function renderBoard() {
@@ -142,7 +168,7 @@ function renderBoard() {
     });
 }
 
-// 드래그 앤 드롭 머지 처리 (10단계 + 10단계 머지 포함)
+// 드래그 앤 드롭 머지 처리
 function handleDrop(e, targetIndex) {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === targetIndex) return;
@@ -153,28 +179,24 @@ function handleDrop(e, targetIndex) {
     if (!sourceItem) return;
 
     if (targetItem === null) {
-        // 빈 칸으로 이동
         boardState[targetIndex] = sourceItem;
         boardState[draggedIndex] = null;
     } else if (
         sourceItem.category === targetItem.category && 
         sourceItem.level === targetItem.level
     ) {
-        // 동일 카테고리 및 동일 레벨 머지
         if (sourceItem.level === MAX_LEVEL) {
-            // ⭐ 10단계 + 10단계 머지 시: 소멸 처리!
+            // 10단계 + 10단계 소멸
             const soundName = `clear_${sourceItem.category}`;
             playSound(soundName);
 
-            // 보상 점수(2,000점) 및 테마 변경
             addScore(2000);
             changeTheme(sourceItem.category);
 
-            // 두 아이템 모두 판에서 제거
             boardState[targetIndex] = null;
             boardState[draggedIndex] = null;
         } else {
-            // 일반 1~9단계 머지: 다음 단계 레벨업
+            // 일반 레벨업 머지
             boardState[targetIndex] = {
                 category: sourceItem.category,
                 level: sourceItem.level + 1
@@ -204,7 +226,6 @@ function changeTheme(category) {
     stage.style.backgroundImage = `url('${theme.bg}')`;
 }
 
-// 판 초기화
 function resetBoard() {
     if (confirm("머지판을 초기화하시겠습니까? (저장된 정보도 삭제됩니다)")) {
         boardState = Array(BOARD_ROWS * BOARD_COLS).fill(null);
