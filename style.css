@@ -213,6 +213,24 @@ body, html {
     object-fit: contain;
 }
 
+/* 셀 내부 요소 위치 정렬을 위한 기준점 설정 */
+.cell {
+    position: relative; /* 숫자 태그의 기준 위치가 됩니다 */
+}
+
+/* 🔢 아이템 오른쪽 아래 레벨 숫자 스타일 */
+.level-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 10px;           /* 아주 작은 글씨 크기 */
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.85); /* 약간 투명한 흰색 글씨 */
+    text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.8); /* 어두운 아이템에서도 잘 보이도록 얇은 그림자 */
+    pointer-events: none;       /* 드래그 앤 드롭 동작 방해 금지 */
+    user-select: none;          /* 텍스트 드래그 선택 방지 */
+}
+
 /* 광고 영역 (배경 완전히 투명) */
 .ad-banner {
     width: 100%;
