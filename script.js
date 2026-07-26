@@ -6,14 +6,12 @@ let boardState = Array(BOARD_ROWS * BOARD_COLS).fill(null);
 let score = 0;
 let draggedIndex = null;
 
-// 테마 배경 설정
 const themeConfig = {
     flower: { bg: 'images/bg_flower.png' },
     ocean: { bg: 'images/bg_ocean.png' },
     space: { bg: 'images/bg_space.png' }
 };
 
-// 효과음 객체
 const sounds = {
     pop: new Audio('sounds/pop.mp3'),
     merge: new Audio('sounds/merge.mp3'),
@@ -22,7 +20,6 @@ const sounds = {
     clear_space: new Audio('sounds/clear_space.mp3')
 };
 
-// 🔊 메모리 누수 방지 오디오 재생 함수
 function playSound(soundKey) {
     if (sounds[soundKey]) {
         sounds[soundKey].currentTime = 0;
@@ -52,16 +49,11 @@ function initBoard() {
     }
 }
 
-// 💾 자동 저장
 function saveGameState() {
-    const gameState = {
-        boardState: boardState,
-        score: score
-    };
+    const gameState = { boardState: boardState, score: score };
     localStorage.setItem('keep_merging_save', JSON.stringify(gameState));
 }
 
-// 📂 저장 데이터 로드
 function loadGameState() {
     const savedData = localStorage.getItem('keep_merging_save');
     if (savedData) {
@@ -77,7 +69,6 @@ function loadGameState() {
     renderBoard();
 }
 
-// 특정 테마 5개 아이템 생성 (꽃, 바다, 우주)
 function spawnItem(category) {
     const SPAWN_COUNT = 5;
     let spawnedAny = false;
@@ -89,9 +80,7 @@ function spawnItem(category) {
             .filter(val => val !== null);
 
         if (emptyIndices.length === 0) {
-            if (!spawnedAny) {
-                alert("머지판이 꽉 찼습니다!");
-            }
+            if (!spawnedAny) alert("머지판이 꽉 찼습니다!");
             break;
         }
 
@@ -109,7 +98,6 @@ function spawnItem(category) {
     }
 }
 
-// 🎲 올랜덤 5개 생성기 (아이템마다 무작위 테마 선택)
 function spawnRandom() {
     const SPAWN_COUNT = 5;
     const categories = ['flower', 'ocean', 'space'];
@@ -122,9 +110,7 @@ function spawnRandom() {
             .filter(val => val !== null);
 
         if (emptyIndices.length === 0) {
-            if (!spawnedAny) {
-                alert("머지판이 꽉 찼습니다!");
-            }
+            if (!spawnedAny) alert("머지판이 꽉 찼습니다!");
             break;
         }
 
@@ -143,7 +129,6 @@ function spawnRandom() {
     }
 }
 
-// 🖼️ 보드 화면 렌더링 (레벨 숫자 생성 포함)
 function renderBoard() {
     const cells = document.querySelectorAll('.cell');
     
@@ -152,7 +137,6 @@ function renderBoard() {
         const itemData = boardState[index];
         
         if (itemData) {
-            // 1. 아이템 이미지 태그 생성
             const img = document.createElement('img');
             img.src = `images/${itemData.category}_${itemData.level}.png`;
             img.onerror = function() {
@@ -160,12 +144,10 @@ function renderBoard() {
             };
             img.className = 'item';
             img.draggable = true;
-
             img.addEventListener('dragstart', () => { draggedIndex = index; });
-
             cell.appendChild(img);
 
-            // 2. 🔢 오른쪽 아래 레벨 숫자 태그 생성
+            // 🔢 아이템 오른쪽 아래 배지
             const badge = document.createElement('span');
             badge.className = 'level-badge';
             badge.innerText = itemData.level;
@@ -174,7 +156,6 @@ function renderBoard() {
     });
 }
 
-// 드래그 앤 드롭 머지 로직
 function handleDrop(e, targetIndex) {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === targetIndex) return;
@@ -192,23 +173,18 @@ function handleDrop(e, targetIndex) {
         sourceItem.level === targetItem.level
     ) {
         if (sourceItem.level === MAX_LEVEL) {
-            // 10단계 클리어
             const soundName = `clear_${sourceItem.category}`;
             playSound(soundName);
-
             addScore(2000);
             changeTheme(sourceItem.category);
-
             boardState[targetIndex] = null;
             boardState[draggedIndex] = null;
         } else {
-            // 레벨업 머지
             boardState[targetIndex] = {
                 category: sourceItem.category,
                 level: sourceItem.level + 1
             };
             boardState[draggedIndex] = null;
-
             playSound('merge');
             addScore((sourceItem.level + 1) * 10);
         }
@@ -233,7 +209,7 @@ function changeTheme(category) {
 }
 
 function resetBoard() {
-    if (confirm("머지판을 초기화하시겠습니까? (저장된 정보도 삭제됩니다)")) {
+    if (confirm("머지판을 초기화하시겠습니까?")) {
         boardState = Array(BOARD_ROWS * BOARD_COLS).fill(null);
         score = 0;
         document.getElementById('score-value').innerText = score;
