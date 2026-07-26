@@ -5,24 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keep Merging</title>
     <link rel="stylesheet" href="style.css">
-  
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="game-stage">
-        <div class="header-bar">
+        
+        <!-- 상단 사이드 정보 (머지판 좌측 상단 점수 / 좌측 하단 새로고침 배치용 컨테이너) -->
+        <div class="top-info-container">
             <div class="score-box">점수: <span id="score-value">0</span></div>
-            <button id="reset-btn">초기화</button>
+            <button id="reset-btn">새로고침</button>
         </div>
 
         <!-- 6x8 머지 판 -->
         <div id="merge-board"></div>
 
-        <!-- 하단 생성기 버튼 영역 -->
+        <!-- 머지판 아래 생성기 퀵바 (아이템 1단계 이미지 적용) -->
         <div class="spawner-buttons">
-            <button class="btn-spawn flower" onclick="spawnItem('flower')">🌸 꽃</button>
-            <button class="btn-spawn ocean" onclick="spawnItem('ocean')">🌊 바다</button>
-            <button class="btn-spawn space" onclick="spawnItem('space')">🚀 우주</button>
-            <button class="btn-spawn random" onclick="spawnRandom()">❓??</button>
+            <button class="btn-spawn" onclick="spawnItem('flower')">
+                <img src="images/flower_1.png" alt="꽃 생성기" onerror="this.src='https://via.placeholder.com/40?text=🌸'">
+            </button>
+            <button class="btn-spawn" onclick="spawnItem('ocean')">
+                <img src="images/ocean_1.png" alt="바다 생성기" onerror="this.src='https://via.placeholder.com/40?text=🌊'">
+            </button>
+            <button class="btn-spawn" onclick="spawnItem('space')">
+                <img src="images/space_1.png" alt="우주 생성기" onerror="this.src='https://via.placeholder.com/40?text=🚀'">
+            </button>
+            <button class="btn-spawn random-btn" onclick="spawnRandom()">
+                <span>??</span>
+            </button>
         </div>
 
         <!-- 하단 광고 영역 -->
