@@ -1,1 +1,236 @@
+/* 온글잎 의연체 폰트 등록 */
+@font-face {
+    font-family: 'UiYeon';
+    src: url('fonts/온글잎 의연체.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #000;
+    font-family: 'UiYeon', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 1920x1080 16:9 반응형 게임 배경 */
+.game-stage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 177.78vh;
+    max-height: 56.25vw;
+    background-image: url('images/bg_default.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-image 0.5s ease-in-out;
+}
+
+/* 중앙 불투명 50% 하얀색 세로 카드 */
+.center-card {
+    width: 40%;
+    height: 96%;
+    background-color: rgba(255, 255, 255, 0.5); /* 하얀색 50% */
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5%;
+    gap: 1.5%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* 상단 영역 (좌측 사이드 + 우측 머지판) */
+.top-section {
+    display: flex;
+    flex: 1;
+    gap: 2%;
+    min-height: 0;
+}
+
+/* 좌측 사이드바 (점수 및 새로고침) */
+.left-sidebar {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* 점수 상자 */
+.score-box {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 스코어 명칭 (연한 회색 배경) */
+.score-title {
+    background-color: rgba(230, 230, 230, 0.85); /* 연한 회색 */
+    color: #444;
+    font-size: 1.1rem;
+    padding: 4px 0;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* 점수 표시 (흰색 배경) */
+.score-num {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #222;
+    font-size: 1.4rem;
+    padding: 6px 0;
+    font-weight: bold;
+}
+
+/* 새로고침 버튼 */
+.reset-btn {
+    width: 28px;
+    height: 28px;
+    background-color: rgba(255, 255, 255, 0.5); /* 하얀색 불투명 50% */
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
+    color: #444;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background-color 0.2s;
+    backdrop-filter: blur(4px);
+}
+
+.reset-btn:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.reset-btn:active {
+    transform: scale(0.9) rotate(180deg);
+}
+
+/* 머지판 (배경색 투명) */
+.merge-board {
+    flex: 1;
+    height: 100%;
+    background-color: transparent;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 4px;
+    padding: 2px;
+}
+
+/* 머지판 각각의 은은한 칸 구획 */
+.cell {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* 🔢 숫자 배지 기준점 */
+    overflow: hidden;
+}
+
+.item {
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.12s ease;
+}
+
+.item:active {
+    transform: scale(1.15);
+}
+
+/* 🔢 아이템 우측 하단 1~10 레벨 표시 배지 추가 */
+.level-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 3px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    pointer-events: none;
+    line-height: 1;
+    z-index: 5;
+}
+
+/* 생성기 퀵바 (하얀색 불투명 50%) */
+.quickbar {
+    width: 100%;
+    height: 11%;
+    background-color: rgba(255, 255, 255, 0.5); /* 하얀색 불투명 50% */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    padding: 5px;
+    backdrop-filter: blur(4px);
+}
+
+.generator-slot {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+.generator-slot:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.generator-slot:not(.empty):active {
+    transform: scale(0.92);
+}
+
+.generator-slot.empty {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    cursor: default;
+}
+
+.generator-slot img {
+    width: 85%;
+    height: 85%;
+    object-fit: contain;
+}
+
+/* 광고 영역 (배경 완전히 투명) */
+.ad-banner {
+    width: 100%;
+    height: 9%;
+    background-color: transparent;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
