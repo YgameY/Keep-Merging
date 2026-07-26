@@ -20,6 +20,7 @@ const sounds = {
     clear_space: new Audio('sounds/clear_space.mp3')
 };
 
+// 🔊 메모리 누수 방지 오디오 재생
 function playSound(soundKey) {
     if (sounds[soundKey]) {
         sounds[soundKey].currentTime = 0;
@@ -98,6 +99,7 @@ function spawnItem(category) {
     }
 }
 
+// 🎲 올랜덤 5개 아이템 생성 (하나하나 완전 무작위)
 function spawnRandom() {
     const SPAWN_COUNT = 5;
     const categories = ['flower', 'ocean', 'space'];
@@ -137,6 +139,7 @@ function renderBoard() {
         const itemData = boardState[index];
         
         if (itemData) {
+            // 이미지 태그
             const img = document.createElement('img');
             img.src = `images/${itemData.category}_${itemData.level}.png`;
             img.onerror = function() {
@@ -147,7 +150,7 @@ function renderBoard() {
             img.addEventListener('dragstart', () => { draggedIndex = index; });
             cell.appendChild(img);
 
-            // 🔢 오른쪽 아래 배지
+            // 🔢 우측 하단 레벨 숫자 배지 태그
             const badge = document.createElement('span');
             badge.className = 'level-badge';
             badge.innerText = itemData.level;
