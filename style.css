@@ -3,7 +3,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Pretendard', sans-serif;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 }
 
 body {
@@ -13,6 +13,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: 10px;
 }
 
 /* 게임 스테이지 컨테이너 */
@@ -22,13 +23,13 @@ body {
     background-color: #16213e;
     background-size: cover;
     background-position: center;
-    padding: 20px;
+    padding: 16px;
     border-radius: 16px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     transition: background-image 0.5s ease-in-out;
 }
 
@@ -59,27 +60,27 @@ body {
     font-weight: bold;
 }
 
-/* 머지 보드 판 */
+/* 🌟 머지 보드 판 (레이아웃 깨짐 완전 방지!) */
 #merge-board {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(8, 1fr);
     gap: 6px;
     width: 100%;
-    aspect-ratio: 6 / 8;
     background: rgba(0, 0, 0, 0.3);
     padding: 8px;
     border-radius: 12px;
 }
 
-/* 🌟 셀 스타일 (position: relative가 핵심!) */
+/* 🌟 셀 스타일 (가로세로 1:1 비율 및 상대 위치 지정) */
 .cell {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 8px;
+    width: 100%;
+    aspect-ratio: 1 / 1; /* 정사각형 유지 */
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative; /* 🔢 숫자 배지 위치의 기준점 */
+    position: relative; /* 🔢 레벨 숫자 위치의 기준점 */
     overflow: hidden;
 }
 
@@ -90,24 +91,26 @@ body {
     object-fit: contain;
     cursor: grab;
     user-select: none;
+    -webkit-user-drag: element;
 }
 
 .item:active {
     cursor: grabbing;
 }
 
-/* 🔢 우측 하단 레벨 숫자 표시 배지 */
+/* 🔢 우측 하단 레벨 숫자 표시 배지 (또렷하고 선명함) */
 .level-badge {
     position: absolute;
     bottom: 2px;
-    right: 4px;
-    font-size: 11px;
+    right: 3px;
+    font-size: 10px;
     font-weight: 800;
     color: #ffffff;
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; /* 또렷한 검은색 테두리 */
-    pointer-events: none; /* 클릭 및 드래그 방해 금지 */
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    pointer-events: none; /* 드래그 동작 방해 금지 */
     user-select: none;
     z-index: 5;
+    line-height: 1;
 }
 
 /* 하단 버튼 생성기 영역 */
@@ -126,6 +129,7 @@ body {
     background: #0f3460;
     color: white;
     font-weight: bold;
+    font-size: 13px;
     cursor: pointer;
     transition: transform 0.1s, background 0.2s;
 }
@@ -143,7 +147,7 @@ body {
 .ad-banner {
     width: 100%;
     min-height: 90px;
-    margin-top: 10px;
+    margin-top: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
