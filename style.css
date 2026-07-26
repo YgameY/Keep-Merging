@@ -1,174 +1,223 @@
+/* 온글잎 의연체 폰트 등록 */
+@font-face {
+    font-family: 'UiYeon';
+    src: url('fonts/온글잎 의연체.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Pretendard', -apple-system, sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
-body {
-    background-color: #1a1a2e;
-    color: #ffffff;
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #000;
+    font-family: 'UiYeon', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 10px;
 }
 
-/* 🌟 게임 스테이지 (디폴트 배경 이미지 적용) */
-#game-stage {
-    width: 100%;
-    max-width: 440px;
-    background-color: #16213e;
-    background-image: url('images/bg_flower.png'); /* 디폴트 배경 소스 */
+/* 1920x1080 16:9 반응형 게임 배경 */
+.game-stage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 177.78vh;
+    max-height: 56.25vw;
+    background-image: url('images/bg_default.png');
     background-size: cover;
     background-position: center;
-    padding: 16px;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-}
-
-/* 🌟 머지판 좌측/상단 정보 컨테이너 */
-.top-info-container {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 4px;
-}
-
-/* 🤍 점수판 (머지판 좌측 상단 옆 - 하얀 배경에 검은 글씨) */
-.score-box {
-    background-color: #ffffff;
-    color: #000000;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-/* 🔄 새로고침 버튼 (머지판 옆 글자 형태) */
-#reset-btn {
-    background: transparent;
-    color: #ffffff;
-    border: none;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: underline;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-    padding: 4px 8px;
-}
-
-#reset-btn:hover {
-    color: #f1c40f;
-}
-
-/* 머지 보드 */
-#merge-board {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 6px;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 8px;
-    border-radius: 12px;
-    backdrop-filter: blur(2px);
-}
-
-.cell {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    width: 100%;
-    aspect-ratio: 1 / 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+    transition: background-image 0.5s ease-in-out;
+}
+
+/* 중앙 불투명 50% 하얀색 세로 카드 */
+.center-card {
+    width: 40%;
+    height: 96%;
+    background-color: rgba(255, 255, 255, 0.5); /* 하얀색 50% */
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5%;
+    gap: 1.5%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* 상단 영역 (좌측 사이드 + 우측 머지판) */
+.top-section {
+    display: flex;
+    flex: 1;
+    gap: 2%;
+    min-height: 0;
+}
+
+/* 좌측 사이드바 (점수 및 새로고침) */
+.left-sidebar {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* 점수 상자 */
+.score-box {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
     overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 스코어 명칭 (연한 회색 배경) */
+.score-title {
+    background-color: rgba(230, 230, 230, 0.85); /* 연한 회색 */
+    color: #444;
+    font-size: 1.1rem;
+    padding: 4px 0;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* 점수 표시 (흰색 배경) */
+.score-num {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #222;
+    font-size: 1.4rem;
+    padding: 6px 0;
+    font-weight: bold;
+}
+
+/* 새로고침 버튼 (1/4 크기로 축소 & 불투명 50% 흰색) */
+.reset-btn {
+    width: 28px;
+    height: 28px;
+    background-color: rgba(255, 255, 255, 0.5); /* 하얀색 불투명 50% */
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
+    color: #444;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background-color 0.2s;
+    backdrop-filter: blur(4px);
+}
+
+.reset-btn:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.reset-btn:active {
+    transform: scale(0.9) rotate(180deg);
+}
+
+/* 머지판 (배경색 투명) */
+.merge-board {
+    flex: 1;
+    height: 100%;
+    background-color: transparent; /* 배경색 완전히 투명 */
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 4px;
+    padding: 2px;
+}
+
+/* 머지판 각각의 은은한 칸 구획 */
+.cell {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 .item {
-    width: 85%;
-    height: 85%;
+    width: 88%;
+    height: 88%;
     object-fit: contain;
-    cursor: grab;
-    user-select: none;
+    cursor: pointer;
+    transition: transform 0.12s ease;
 }
 
 .item:active {
-    cursor: grabbing;
+    transform: scale(1.15);
 }
 
-/* 🔢 아이템 우측 하단 레벨 표시 배지 */
-.level-badge {
-    position: absolute;
-    bottom: 2px;
-    right: 3px;
-    font-size: 10px;
-    font-weight: 800;
-    color: #ffffff;
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    pointer-events: none;
-    user-select: none;
-    z-index: 10;
-    line-height: 1;
-}
-
-/* 🌟 하단 생성기 퀵바 (아이템 소스 버튼) */
-.spawner-buttons {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+/* 생성기 퀵바 (하얀색 불투명 50%) */
+.quickbar {
     width: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 8px;
-    border-radius: 12px;
-    gap: 8px;
+    height: 11%;
+    background-color: rgba(255, 255, 255, 0.5); /* 하얀색 불투명 50% */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    padding: 5px;
+    backdrop-filter: blur(4px);
 }
 
-.btn-spawn {
-    flex: 1;
-    height: 50px;
-    border: none;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.15);
-    cursor: pointer;
+.generator-slot {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    transition: transform 0.1s, background 0.2s;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: transform 0.1s, background-color 0.2s;
 }
 
-.btn-spawn:active {
+.generator-slot:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.generator-slot:not(.empty):active {
     transform: scale(0.92);
 }
 
-.btn-spawn img {
-    max-width: 80%;
-    max-height: 80%;
+.generator-slot.empty {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    cursor: default;
+}
+
+.generator-slot img {
+    width: 85%;
+    height: 85%;
     object-fit: contain;
 }
 
-.random-btn {
-    background: #fdcb6e;
-    color: #2d3436;
-    font-weight: 900;
-    font-size: 18px;
-}
-
-/* 하단 광고 영역 */
+/* 광고 영역 (배경 완전히 투명) */
 .ad-banner {
     width: 100%;
-    min-height: 90px;
-    margin-top: 4px;
+    height: 9%;
+    background-color: transparent; /* 배경 투명 */
+    border: 1px dashed rgba(255, 255, 255, 0.4); /* 영역 확인용 미세한 점선 */
+    border-radius: 8px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
 }
