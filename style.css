@@ -12,6 +12,9 @@
     padding: 0;
     user-select: none;
     -webkit-user-select: none;
+    /* 📱 모바일 터치 제스처 관련 웹킷 설정 추가 */
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body, html {
@@ -23,6 +26,8 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* 모바일 더블터치 줌 방지 */
+    touch-action: manipulation;
 }
 
 /* 1920x1080 16:9 반응형 게임 배경 */
@@ -45,7 +50,7 @@ body, html {
 .center-card {
     width: 40%;
     height: 96%;
-    background-color: rgba(255, 255, 255, 0.5); /* 하얀색 50% */
+    background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(8px);
     display: flex;
     flex-direction: column;
@@ -54,6 +59,16 @@ body, html {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* 📱 모바일 기기(화면 너비가 좁을 때) 대응 */
+@media (max-width: 768px) {
+    .center-card {
+        width: 92%; /* 모바일에서는 중앙 카드가 화면을 가득 채우도록 변경 */
+        height: 98%;
+        padding: 3%;
+        gap: 2%;
+    }
 }
 
 /* 상단 영역 (좌측 사이드 + 우측 머지판) */
@@ -84,9 +99,8 @@ body, html {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* 스코어 명칭 (연한 회색 배경, 볼드 제거) */
 .score-title {
-    background-color: rgba(230, 230, 230, 0.85); /* 연한 회색 */
+    background-color: rgba(230, 230, 230, 0.85);
     color: #444;
     font-size: 1.1rem;
     padding: 4px 0;
@@ -94,7 +108,6 @@ body, html {
     letter-spacing: 1px;
 }
 
-/* 점수 표시 (흰색 배경, 볼드 제거) */
 .score-num {
     background-color: rgba(255, 255, 255, 0.9);
     color: #222;
@@ -103,12 +116,12 @@ body, html {
     font-weight: normal;
 }
 
-/* 새로고침 버튼 (가로넓이 확장 & 텍스트형) */
+/* 새로고침 버튼 */
 .reset-btn {
     width: 100%;
     height: auto;
     padding: 6px 10px;
-    background-color: rgba(255, 255, 255, 0.5); /* 하얀색 불투명 50% */
+    background-color: rgba(255, 255, 255, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 6px;
     color: #444;
@@ -132,7 +145,7 @@ body, html {
     transform: scale(0.95);
 }
 
-/* 머지판 (배경색 투명) */
+/* 머지판 */
 .merge-board {
     flex: 1;
     height: 100%;
@@ -152,8 +165,10 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative; /* 🔢 숫자 배지 기준점 */
+    position: relative;
     overflow: hidden;
+    /* 모바일 드래그 시 스크롤 현상 차단 */
+    touch-action: none; 
 }
 
 .item {
@@ -162,13 +177,14 @@ body, html {
     object-fit: contain;
     cursor: pointer;
     transition: transform 0.12s ease;
+    touch-action: none;
 }
 
 .item:active {
     transform: scale(1.15);
 }
 
-/* 🔢 아이템 우측 하단 1~10 레벨 표시 배지 (온글잎 의연체, 0.8rem, 볼드X, 까만색) */
+/* 🔢 아이템 레벨 배지 */
 .level-badge {
     position: absolute;
     bottom: 2px;
@@ -183,11 +199,11 @@ body, html {
     z-index: 5;
 }
 
-/* 생성기 퀵바 (하얀색 불투명 50%) */
+/* 생성기 퀵바 */
 .quickbar {
     width: 100%;
     height: 11%;
-    background-color: rgba(255, 255, 255, 0.5); /* 하얀색 불투명 50% */
+    background-color: rgba(255, 255, 255, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 10px;
     display: grid;
@@ -206,6 +222,7 @@ body, html {
     cursor: pointer;
     border: 1px solid rgba(255, 255, 255, 0.5);
     transition: transform 0.1s, background-color 0.2s;
+    touch-action: manipulation;
 }
 
 .generator-slot:hover {
@@ -226,9 +243,10 @@ body, html {
     width: 85%;
     height: 85%;
     object-fit: contain;
+    pointer-events: none;
 }
 
-/* 광고 영역 (배경 완전히 투명) */
+/* 광고 영역 */
 .ad-banner {
     width: 100%;
     height: 9%;
