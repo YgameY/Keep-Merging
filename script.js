@@ -6,6 +6,10 @@ let boardState = Array(BOARD_ROWS * BOARD_COLS).fill(null);
 let score = 0;
 let draggedIndex = null;
 
+// 모바일 터치 드래그용 상태 변수
+let touchDragIndex = null;
+let activeDragImage = null;
+
 const themeConfig = {
     flower: { bg: 'images/bg_flower.png' },
     ocean: { bg: 'images/bg_ocean.png' },
@@ -20,7 +24,6 @@ const sounds = {
     clear_space: new Audio('sounds/clear_space.mp3')
 };
 
-// 🔊 메모리 누수 방지 오디오 재생
 function playSound(soundKey) {
     if (sounds[soundKey]) {
         sounds[soundKey].currentTime = 0;
@@ -43,6 +46,7 @@ function initBoard() {
         cell.className = 'cell';
         cell.dataset.index = i;
         
+        // PC 마우스 드래그 이벤트
         cell.addEventListener('dragover', (e) => e.preventDefault());
         cell.addEventListener('drop', (e) => handleDrop(e, i));
         
@@ -99,7 +103,6 @@ function spawnItem(category) {
     }
 }
 
-// 🎲 올랜덤 5개 아이템 생성 (하나하나 완전 무작위)
 function spawnRandom() {
     const SPAWN_COUNT = 5;
     const categories = ['flower', 'ocean', 'space'];
@@ -139,7 +142,6 @@ function renderBoard() {
         const itemData = boardState[index];
         
         if (itemData) {
-            // 이미지 태그
             const img = document.createElement('img');
             img.src = `images/${itemData.category}_${itemData.level}.png`;
             img.onerror = function() {
@@ -147,10 +149,18 @@ function renderBoard() {
             };
             img.className = 'item';
             img.draggable = true;
+            
+            // PC 드래그 시작
             img.addEventListener('dragstart', () => { draggedIndex = index; });
+
+            // 📱 모바일 터치 이벤트 핸들러 등록
+            img.addEventListener('touchstart', (e) => handleTouchStart(e, index), { passive: false });
+            img.addEventListener('touchmove', handleTouchMove, { passive: false });
+            img.addEventListener('touchend', handleTouchEnd, { passive: false });
+
             cell.appendChild(img);
 
-            // 🔢 우측 하단 레벨 숫자 배지 태그
+            // 레벨 배지
             const badge = document.createElement('span');
             badge.className = 'level-badge';
             badge.innerText = itemData.level;
@@ -159,18 +169,82 @@ function renderBoard() {
     });
 }
 
+/* 📱 모바일 터치 처리 함수 모음 */
+function handleTouchStart(e, index) {
+    e.preventDefault();
+    touchDragIndex = index;
+    const touch = e.touches[0];
+    const targetImg = e.target;
+
+    // 모바일 터치 중 따라다닐 잔상(임시 이미지) 생성
+    activeDragImage = targetImg.cloneNode(true);
+    activeDragImage.style.position = 'fixed';
+    activeDragImage.style.pointerEvents = 'none';
+    activeDragImage.style.zIndex = '1000';
+    activeDragImage.style.width = targetImg.offsetWidth + 'px';
+    activeDragImage.style.height = targetImg.offsetHeight + 'px';
+    activeDragImage.style.opacity = '0.8';
+    
+    updateTouchImagePosition(touch);
+    document.body.appendChild(activeDragImage);
+}
+
+function handleTouchMove(e) {
+    if (!activeDragImage) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    updateTouchImagePosition(touch);
+}
+
+function handleTouchEnd(e) {
+    if (touchDragIndex === null) return;
+    e.preventDefault();
+
+    const touch = e.changedTouches[0];
+    if (activeDragImage) {
+        activeDragImage.remove();
+        activeDragImage = null;
+    }
+
+    // 손가락이 떼어진 위치의 셀 요소 탐색
+    const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+    const cell = dropTarget ? dropTarget.closest('.cell') : null;
+
+    if (cell) {
+        const targetIndex = parseInt(cell.dataset.index, 10);
+        executeMergeOrMove(touchDragIndex, targetIndex);
+    }
+
+    touchDragIndex = null;
+}
+
+function updateTouchImagePosition(touch) {
+    if (activeDragImage) {
+        activeDragImage.style.left = (touch.clientX - activeDragImage.offsetWidth / 2) + 'px';
+        activeDragImage.style.top = (touch.clientY - activeDragImage.offsetHeight / 2) + 'px';
+    }
+}
+
+/* PC 마우스 드롭 핸들러 */
 function handleDrop(e, targetIndex) {
     e.preventDefault();
-    if (draggedIndex === null || draggedIndex === targetIndex) return;
+    if (draggedIndex === null) return;
+    executeMergeOrMove(draggedIndex, targetIndex);
+    draggedIndex = null;
+}
 
-    const sourceItem = boardState[draggedIndex];
-    const targetItem = boardState[targetIndex];
+/* 머지 및 이동 공통 로직 */
+function executeMergeOrMove(fromIndex, toIndex) {
+    if (fromIndex === null || fromIndex === toIndex) return;
+
+    const sourceItem = boardState[fromIndex];
+    const targetItem = boardState[toIndex];
 
     if (!sourceItem) return;
 
     if (targetItem === null) {
-        boardState[targetIndex] = sourceItem;
-        boardState[draggedIndex] = null;
+        boardState[toIndex] = sourceItem;
+        boardState[fromIndex] = null;
     } else if (
         sourceItem.category === targetItem.category && 
         sourceItem.level === targetItem.level
@@ -180,20 +254,19 @@ function handleDrop(e, targetIndex) {
             playSound(soundName);
             addScore(2000);
             changeTheme(sourceItem.category);
-            boardState[targetIndex] = null;
-            boardState[draggedIndex] = null;
+            boardState[toIndex] = null;
+            boardState[fromIndex] = null;
         } else {
-            boardState[targetIndex] = {
+            boardState[toIndex] = {
                 category: sourceItem.category,
                 level: sourceItem.level + 1
             };
-            boardState[draggedIndex] = null;
+            boardState[fromIndex] = null;
             playSound('merge');
             addScore((sourceItem.level + 1) * 10);
         }
     }
 
-    draggedIndex = null;
     renderBoard();
     saveGameState();
 }
