@@ -13,7 +13,7 @@ const themeConfig = {
     space: { bg: 'images/bg_space.png' }
 };
 
-// 효과음 객체 생성
+// 효과음 객체
 const sounds = {
     pop: new Audio('sounds/pop.mp3'),
     merge: new Audio('sounds/merge.mp3'),
@@ -22,17 +22,17 @@ const sounds = {
     clear_space: new Audio('sounds/clear_space.mp3')
 };
 
-// 🔊 메모리 누수 없는 최적화된 오디오 재생 함수
+// 🔊 메모리 누수 방지 오디오 재생 함수
 function playSound(soundKey) {
     if (sounds[soundKey]) {
-        sounds[soundKey].currentTime = 0; // 재생 위치를 처음으로 리셋하여 재사용
+        sounds[soundKey].currentTime = 0;
         sounds[soundKey].play().catch(e => console.log("Audio play error:", e));
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initBoard();
-    loadGameState(); // 저장된 데이터 불러오기
+    loadGameState();
     document.getElementById('reset-btn').addEventListener('click', resetBoard);
 });
 
@@ -52,7 +52,7 @@ function initBoard() {
     }
 }
 
-// 💾 자동 저장 기능
+// 💾 자동 저장
 function saveGameState() {
     const gameState = {
         boardState: boardState,
@@ -61,7 +61,7 @@ function saveGameState() {
     localStorage.setItem('keep_merging_save', JSON.stringify(gameState));
 }
 
-// 📂 불러오기 기능
+// 📂 저장 데이터 로드
 function loadGameState() {
     const savedData = localStorage.getItem('keep_merging_save');
     if (savedData) {
@@ -71,14 +71,13 @@ function loadGameState() {
             score = parsedData.score || 0;
             document.getElementById('score-value').innerText = score;
         } catch (e) {
-            console.error("저장된 데이터를 불러오는 데 실패했습니다.", e);
+            console.error("데이터 로드 실패:", e);
         }
     }
     renderBoard();
-    
 }
 
-// 특정 카테고리 5개 생성 (꽃, 바다, 우주 생성기)
+// 특정 테마 5개 아이템 생성 (꽃, 바다, 우주)
 function spawnItem(category) {
     const SPAWN_COUNT = 5;
     let spawnedAny = false;
@@ -110,7 +109,7 @@ function spawnItem(category) {
     }
 }
 
-// ❓❔ 올랜덤 생성기 함수 (아이템 하나마다 카테고리를 완전히 무작위 결정!)
+// 🎲 올랜덤 5개 생성기 (아이템마다 무작위 테마 선택)
 function spawnRandom() {
     const SPAWN_COUNT = 5;
     const categories = ['flower', 'ocean', 'space'];
@@ -130,8 +129,6 @@ function spawnRandom() {
         }
 
         const targetIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
-        
-        // 🎲 매 아이템마다 카테고리와 레벨을 각각 랜덤 지정
         const randomCategory = categories[Math.floor(Math.random() * categories.length)];
         const randomLevel = Math.floor(Math.random() * maxSpawnLevel) + 1;
 
@@ -146,6 +143,7 @@ function spawnRandom() {
     }
 }
 
+// 🖼️ 보드 화면 렌더링 (레벨 숫자 생성 포함)
 function renderBoard() {
     const cells = document.querySelectorAll('.cell');
     
@@ -154,7 +152,7 @@ function renderBoard() {
         const itemData = boardState[index];
         
         if (itemData) {
-            // 1. 아이템 이미지 생성
+            // 1. 아이템 이미지 태그 생성
             const img = document.createElement('img');
             img.src = `images/${itemData.category}_${itemData.level}.png`;
             img.onerror = function() {
@@ -167,7 +165,7 @@ function renderBoard() {
 
             cell.appendChild(img);
 
-            // 2. 🔢 오른쪽 아래에 붙을 레벨 숫자 태그 생성
+            // 2. 🔢 오른쪽 아래 레벨 숫자 태그 생성
             const badge = document.createElement('span');
             badge.className = 'level-badge';
             badge.innerText = itemData.level;
@@ -176,7 +174,7 @@ function renderBoard() {
     });
 }
 
-// 드래그 앤 드롭 머지 처리
+// 드래그 앤 드롭 머지 로직
 function handleDrop(e, targetIndex) {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === targetIndex) return;
@@ -194,7 +192,7 @@ function handleDrop(e, targetIndex) {
         sourceItem.level === targetItem.level
     ) {
         if (sourceItem.level === MAX_LEVEL) {
-            // 10단계 + 10단계 소멸
+            // 10단계 클리어
             const soundName = `clear_${sourceItem.category}`;
             playSound(soundName);
 
@@ -204,7 +202,7 @@ function handleDrop(e, targetIndex) {
             boardState[targetIndex] = null;
             boardState[draggedIndex] = null;
         } else {
-            // 일반 레벨업 머지
+            // 레벨업 머지
             boardState[targetIndex] = {
                 category: sourceItem.category,
                 level: sourceItem.level + 1
