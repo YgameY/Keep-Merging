@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Keep Merging</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 1920x1080 배경 무대 -->
+    <div id="game-stage" class="game-stage">
+        
+        <!-- 중앙 불투명 50% 하얀색 세로 구역 -->
+        <div class="center-card">
+            
+            <!-- 상단 게임 영역 -->
+            <div class="top-section">
+                <!-- 좌측 사이드바 -->
+                <div class="left-sidebar">
+                    <div class="score-box">
+                        <div class="score-title">SCORE</div>
+                        <div id="score-value" class="score-num">0</div>
+                    </div>
+                    
+                    <!-- 글씨로 변경된 새로고침 버튼 -->
+                    <button id="reset-btn" class="reset-btn" title="판 초기화">
+                        새로고침
+                    </button>
+                </div>
+
+                <!-- 검정색 6x8 머지판 -->
+                <div id="merge-board" class="merge-board">
+                    <!-- 48칸 자동 생성 -->
+                </div>
+            </div>
+
+            <!-- 생성기 퀵바 (6x1) -->
+            <div id="quickbar" class="quickbar">
+    <div class="generator-slot" onclick="spawnItem('flower')" title="꽃 바구니">
+        <img src="images/basket_flower.png" alt="꽃 바구니" onerror="this.src='https://via.placeholder.com/80?text=Flower'">
+    </div>
+    <div class="generator-slot" onclick="spawnItem('ocean')" title="바다 바구니">
+        <img src="images/basket_ocean.png" alt="바다 바구니" onerror="this.src='https://via.placeholder.com/80?text=Ocean'">
+    </div>
+    <div class="generator-slot" onclick="spawnItem('space')" title="우주 바구니">
+        <img src="images/basket_space.png" alt="우주 바구니" onerror="this.src='https://via.placeholder.com/80?text=Space'">
+    </div>
+    <div class="generator-slot empty"></div>
+    <div class="generator-slot empty"></div>
+    
+    <!-- ❓❔ 랜덤 버튼 (onclick="spawnRandom()" 확인) -->
+    <div class="generator-slot random-slot" onclick="spawnRandom()" title="랜덤 생성기">
+        <span class="random-icon">❓❔</span>
+    </div>
+</div>
+
+            <!-- 핑크색 광고판 위치 -->
+            <div class="ad-banner">
+                <span>광고 영역 (AdSense)</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
