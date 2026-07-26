@@ -24,8 +24,8 @@ const sounds = {
 
 function playSound(soundKey) {
     if (sounds[soundKey]) {
-        const audioClone = sounds[soundKey].cloneNode();
-        audioClone.play().catch(e => console.log("Audio play error:", e));
+        sounds[soundKey].currentTime = 0; // 처음 위치로 되돌리기
+        sounds[soundKey].play().catch(e => console.log("Audio play error:", e));
     }
 }
 
