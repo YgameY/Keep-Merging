@@ -28,11 +28,11 @@ body, html {
     touch-action: manipulation;
 }
 
-/* 게임 배경 */
+/* 🎮 게임 스테이지 (기본 PC / 모니터 화면) */
 .game-stage {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-image: url('images/bg_default.png');
     background-size: cover;
     background-position: center;
@@ -42,24 +42,45 @@ body, html {
     transition: background-image 0.5s ease-in-out;
 }
 
-/* 중앙 불투명 50% 하얀색 세로 카드 */
-.center-card {
-    width: 400px;
-    max-width: 95vw;
-    height: auto;
-    max-height: 95vh;
-    background-color: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    display: flex;
-    flex-direction: column;
-    padding: 12px;
-    gap: 10px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+/* 🖥️ PC 화면 전용 스타일 (화면에 꽉 차고 시원하게 확장) */
+@media (min-width: 769px) {
+    .game-stage {
+        max-width: 177.78vh; /* 16:9 반응형 유지 */
+        max-height: 56.25vw;
+    }
+
+    .center-card {
+        width: 42%;
+        height: 96%;
+        padding: 1.5%;
+        gap: 1.2%;
+    }
+
+    .score-title {
+        font-size: 1.1rem;
+        padding: 4px 0;
+    }
+
+    .score-num {
+        font-size: 1.4rem;
+        padding: 6px 0;
+    }
+
+    .reset-btn {
+        font-size: 1rem;
+        padding: 6px 10px;
+    }
+
+    .quickbar {
+        height: 11%;
+    }
+
+    .ad-banner {
+        height: 9%;
+    }
 }
 
-/* 📱 모바일 화면 (세로 모드) 맞춤 반응형 */
+/* 📱 모바일 화면 전용 스타일 */
 @media (max-width: 768px) {
     .center-card {
         width: 98vw;
@@ -70,19 +91,39 @@ body, html {
     }
 
     .score-title {
-        font-size: 0.95rem !important;
-        padding: 2px 0 !important;
+        font-size: 0.95rem;
+        padding: 2px 0;
     }
 
     .score-num {
-        font-size: 1.15rem !important;
-        padding: 4px 0 !important;
+        font-size: 1.15rem;
+        padding: 4px 0;
     }
 
     .reset-btn {
-        font-size: 0.85rem !important;
-        padding: 4px 6px !important;
+        font-size: 0.85rem;
+        padding: 4px 6px;
     }
+
+    .quickbar {
+        aspect-ratio: 6 / 1;
+        max-height: 60px;
+    }
+
+    .ad-banner {
+        height: 50px;
+    }
+}
+
+/* ⬜ 중앙 불투명 50% 하얀색 세로 카드 공통 구조 */
+.center-card {
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 /* 상단 영역 (좌측 사이드 + 우측 머지판) */
@@ -118,8 +159,6 @@ body, html {
 .score-title {
     background-color: rgba(230, 230, 230, 0.85);
     color: #444;
-    font-size: 1.1rem;
-    padding: 4px 0;
     font-weight: normal;
     letter-spacing: 1px;
     white-space: nowrap;
@@ -128,8 +167,6 @@ body, html {
 .score-num {
     background-color: rgba(255, 255, 255, 0.9);
     color: #222;
-    font-size: 1.3rem;
-    padding: 6px 0;
     font-weight: normal;
     word-break: break-all;
 }
@@ -138,12 +175,10 @@ body, html {
 .reset-btn {
     width: 100%;
     height: auto;
-    padding: 6px 8px;
     background-color: rgba(255, 255, 255, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 6px;
     color: #444;
-    font-size: 0.95rem;
     font-family: 'UiYeon', sans-serif;
     font-weight: normal;
     cursor: pointer;
@@ -166,6 +201,7 @@ body, html {
 /* 머지판 */
 .merge-board {
     flex: 1;
+    height: 100%;
     background-color: transparent;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -174,9 +210,8 @@ body, html {
     padding: 2px;
 }
 
-/* 🟩 머지판 각각의 은은한 칸 구획 (정사각형 1:1 고정) */
+/* 🟩 머지판 각각의 은은한 칸 구획 */
 .cell {
-    aspect-ratio: 1 / 1; /* 완벽한 정사각형 비율 유지 */
     background: rgba(255, 255, 255, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 6px;
@@ -216,11 +251,9 @@ body, html {
     z-index: 5;
 }
 
-/* 생성기 퀵바 (높이 자동 비율 맞춤) */
+/* 생성기 퀵바 */
 .quickbar {
     width: 100%;
-    aspect-ratio: 6 / 1;
-    max-height: 60px;
     background-color: rgba(255, 255, 255, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 10px;
@@ -232,7 +265,6 @@ body, html {
 }
 
 .generator-slot {
-    aspect-ratio: 1 / 1;
     background: rgba(255, 255, 255, 0.4);
     border-radius: 6px;
     display: flex;
@@ -268,7 +300,6 @@ body, html {
 /* 광고 영역 */
 .ad-banner {
     width: 100%;
-    height: 50px;
     background-color: transparent;
     border-radius: 8px;
     display: flex;
