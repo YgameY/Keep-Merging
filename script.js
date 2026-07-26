@@ -10,6 +10,9 @@ let draggedIndex = null;
 let touchDragIndex = null;
 let activeDragImage = null;
 
+// ⚡ 이미지 사전 로딩(Preloading)을 위한 캐시 객체
+const imageCache = {};
+
 const themeConfig = {
     flower: { bg: 'images/bg_flower.png' },
     ocean: { bg: 'images/bg_ocean.png' },
@@ -24,6 +27,37 @@ const sounds = {
     clear_space: new Audio('sounds/clear_space.mp3')
 };
 
+// ⚡ 모든 게임 이미지 미리 로드하여 브라우저 메모리에 저장
+function preloadImages() {
+    const categories = ['flower', 'ocean', 'space'];
+    const extraImages = [
+        'images/bg_default.png',
+        'images/bg_flower.png',
+        'images/bg_ocean.png',
+        'images/bg_space.png',
+        'images/basket_flower.png',
+        'images/basket_ocean.png',
+        'images/basket_space.png'
+    ];
+
+    // 바구니 및 배경 이미지 캐싱
+    extraImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+        imageCache[src] = img;
+    });
+
+    // 1~10단계 아이템 이미지 캐싱
+    categories.forEach(cat => {
+        for (let i = 1; i <= MAX_LEVEL; i++) {
+            const src = `images/${cat}_${i}.png`;
+            const img = new Image();
+            img.src = src;
+            imageCache[src] = img;
+        }
+    });
+}
+
 function playSound(soundKey) {
     if (sounds[soundKey]) {
         sounds[soundKey].currentTime = 0;
@@ -32,6 +66,7 @@ function playSound(soundKey) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    preloadImages(); // ⚡ 게임 로딩 시 미리 이미지 로드 시작
     initBoard();
     loadGameState();
     document.getElementById('reset-btn').addEventListener('click', resetBoard);
@@ -153,7 +188,7 @@ function renderBoard() {
             // PC 드래그 시작
             img.addEventListener('dragstart', () => { draggedIndex = index; });
 
-            // 📱 모바일 터치 이벤트 핸들러 등록
+            // 모바일 터치 이벤트 핸들러
             img.addEventListener('touchstart', (e) => handleTouchStart(e, index), { passive: false });
             img.addEventListener('touchmove', handleTouchMove, { passive: false });
             img.addEventListener('touchend', handleTouchEnd, { passive: false });
@@ -169,14 +204,12 @@ function renderBoard() {
     });
 }
 
-/* 📱 모바일 터치 처리 함수 모음 */
 function handleTouchStart(e, index) {
     e.preventDefault();
     touchDragIndex = index;
     const touch = e.touches[0];
     const targetImg = e.target;
 
-    // 모바일 터치 중 따라다닐 잔상(임시 이미지) 생성
     activeDragImage = targetImg.cloneNode(true);
     activeDragImage.style.position = 'fixed';
     activeDragImage.style.pointerEvents = 'none';
@@ -206,7 +239,6 @@ function handleTouchEnd(e) {
         activeDragImage = null;
     }
 
-    // 손가락이 떼어진 위치의 셀 요소 탐색
     const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
     const cell = dropTarget ? dropTarget.closest('.cell') : null;
 
@@ -225,7 +257,6 @@ function updateTouchImagePosition(touch) {
     }
 }
 
-/* PC 마우스 드롭 핸들러 */
 function handleDrop(e, targetIndex) {
     e.preventDefault();
     if (draggedIndex === null) return;
@@ -233,7 +264,6 @@ function handleDrop(e, targetIndex) {
     draggedIndex = null;
 }
 
-/* 머지 및 이동 공통 로직 */
 function executeMergeOrMove(fromIndex, toIndex) {
     if (fromIndex === null || fromIndex === toIndex) return;
 
