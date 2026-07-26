@@ -1,9 +1,8 @@
-/* 기본 리셋 및 폰트 설정 */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    font-family: 'Pretendard', -apple-system, sans-serif;
 }
 
 body {
@@ -16,7 +15,6 @@ body {
     padding: 10px;
 }
 
-/* 게임 스테이지 컨테이너 */
 #game-stage {
     width: 100%;
     max-width: 420px;
@@ -30,10 +28,8 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    transition: background-image 0.5s ease-in-out;
 }
 
-/* 점수판 및 상단 바 */
 .header-bar {
     width: 100%;
     display: flex;
@@ -60,7 +56,6 @@ body {
     font-weight: bold;
 }
 
-/* 🌟 머지 보드 판 (레이아웃 깨짐 완전 방지!) */
 #merge-board {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
@@ -71,34 +66,31 @@ body {
     border-radius: 12px;
 }
 
-/* 🌟 셀 스타일 (가로세로 1:1 비율 및 상대 위치 지정) */
 .cell {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     width: 100%;
-    aspect-ratio: 1 / 1; /* 정사각형 유지 */
+    aspect-ratio: 1 / 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative; /* 🔢 레벨 숫자 위치의 기준점 */
+    position: relative;
     overflow: hidden;
 }
 
-/* 머지 아이템 이미지 */
 .item {
     width: 85%;
     height: 85%;
     object-fit: contain;
     cursor: grab;
     user-select: none;
-    -webkit-user-drag: element;
 }
 
 .item:active {
     cursor: grabbing;
 }
 
-/* 🔢 우측 하단 레벨 숫자 표시 배지 (또렷하고 선명함) */
+/* 🔢 숫자가 안 보일 위험 방지: 작지만 아주 또렷하게 표기 */
 .level-badge {
     position: absolute;
     bottom: 2px;
@@ -107,13 +99,12 @@ body {
     font-weight: 800;
     color: #ffffff;
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-    pointer-events: none; /* 드래그 동작 방해 금지 */
+    pointer-events: none;
     user-select: none;
-    z-index: 5;
+    z-index: 10;
     line-height: 1;
 }
 
-/* 하단 버튼 생성기 영역 */
 .spawner-buttons {
     display: flex;
     justify-content: space-between;
@@ -131,11 +122,6 @@ body {
     font-weight: bold;
     font-size: 13px;
     cursor: pointer;
-    transition: transform 0.1s, background 0.2s;
-}
-
-.btn-spawn:active {
-    transform: scale(0.95);
 }
 
 .btn-spawn.flower { background: #e84393; }
@@ -143,7 +129,6 @@ body {
 .btn-spawn.space { background: #6c5ce7; }
 .btn-spawn.random { background: #fdcb6e; color: #2d3436; }
 
-/* 하단 애드센스 광고 영역 */
 .ad-banner {
     width: 100%;
     min-height: 90px;
