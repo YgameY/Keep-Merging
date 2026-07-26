@@ -75,6 +75,7 @@ function loadGameState() {
         }
     }
     renderBoard();
+    
 }
 
 // 특정 카테고리 5개 생성 (꽃, 바다, 우주 생성기)
@@ -153,6 +154,7 @@ function renderBoard() {
         const itemData = boardState[index];
         
         if (itemData) {
+            // 1. 아이템 이미지 생성
             const img = document.createElement('img');
             img.src = `images/${itemData.category}_${itemData.level}.png`;
             img.onerror = function() {
@@ -164,6 +166,12 @@ function renderBoard() {
             img.addEventListener('dragstart', () => { draggedIndex = index; });
 
             cell.appendChild(img);
+
+            // 2. 🔢 오른쪽 아래에 붙을 레벨 숫자 태그 생성
+            const badge = document.createElement('span');
+            badge.className = 'level-badge';
+            badge.innerText = itemData.level;
+            cell.appendChild(badge);
         }
     });
 }
